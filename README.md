@@ -6,7 +6,7 @@ a cli tool for checking if a provisioning profile (.mobileprovision) has PPQ ena
 install [go](https://go.dev)
 
 ```bash
-$ go get github.com/planeklm/ppq
+$ go get github.com/planeklm/ppqcheck
 ```
 
 # usage
