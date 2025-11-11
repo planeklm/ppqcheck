@@ -2,6 +2,8 @@
 
 a cli tool for checking if a provisioning profile (.mobileprovision) has PPQ enabled.
 
+[![Go Reference](https://pkg.go.dev/badge/github.com/planeklm/ppqcheck.svg)](https://pkg.go.dev/github.com/planeklm/ppqcheck)
+
 # installation
 install [go](https://go.dev)
 
