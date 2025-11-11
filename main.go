@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"regexp"
+
+	"github.com/fullsailor/pkcs7"
+	"howett.net/plist"
 )
 
 func checkProvision(directory string) bool {
@@ -13,15 +15,21 @@ func checkProvision(directory string) bool {
 
 	data, err := os.ReadFile(provisionFile)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalln("failed to read file: ", err)
 	}
 
-	key := `<key>PPQCheck</key>`
+	p7, err := pkcs7.Parse(data)
+	if err != nil {
+		log.Fatalln("failed to parse cms data: ", err)
+	}
 
-	re := regexp.MustCompile(key)
-	match := re.FindString(string(data))
+	var provision map[string]interface{}
+	_, err = plist.Unmarshal(p7.Content, &provision)
+	if err != nil {
+		log.Fatalln("failed to parse plist: ", err)
+	}
 
-	if match != "" {
+	if _, ok := provision["PPQCheck"]; ok {
 		return true
 	} else {
 		return false
@@ -40,7 +48,7 @@ func main() {
 
 	ppqCheck := checkProvision(*directory)
 
-	if ppqCheck == true {
+	if ppqCheck {
 		println("PPQ has been detected!")
 		return
 	} else {
