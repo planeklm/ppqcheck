@@ -2,7 +2,7 @@
 
 a cli tool for checking if a provisioning profile (.mobileprovision) has PPQ enabled.
 
-# library use
+# installation
 install [go](https://go.dev)
 
 ```bash
@@ -15,6 +15,11 @@ you can get usage info with `ppqcheck -h`.
 ```
 $ ppqcheck -h
 Usage of ppqcheck:
-  -directory string
-        Directory of the .mobileprovision (required)
+  -path string
+        Path of the .mobileprovision (required)
+```
+
+# example
+```
+$ ppqcheck -path /path/to/file.mobileprovision
 ```
