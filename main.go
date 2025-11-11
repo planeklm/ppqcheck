@@ -3,56 +3,48 @@ package main
 import (
 	"flag"
 	"fmt"
-	"log"
 	"os"
 
-	"github.com/fullsailor/pkcs7"
+	"go.mozilla.org/pkcs7"
 	"howett.net/plist"
 )
 
-func checkProvision(directory string) bool {
-	provisionFile := directory
-
-	data, err := os.ReadFile(provisionFile)
+// HasPPQ reports whether the mobileprovision has `PPQCheck` set to `true`.
+func HasPPQ(path string) (bool, error) {
+	data, err := os.ReadFile(path)
 	if err != nil {
-		log.Fatalln("failed to read file: ", err)
+		return false, fmt.Errorf("failed to read file: %w", err)
 	}
 
 	p7, err := pkcs7.Parse(data)
 	if err != nil {
-		log.Fatalln("failed to parse cms data: ", err)
+		return false, fmt.Errorf("failed to parse cms data: %w", err)
 	}
 
-	var provision map[string]interface{}
-	_, err = plist.Unmarshal(p7.Content, &provision)
-	if err != nil {
-		log.Fatalln("failed to parse plist: ", err)
+	var provision map[string]any
+	if _, err = plist.Unmarshal(p7.Content, &provision); err != nil {
+		return false, fmt.Errorf("failed to parse plist: %w", err)
 	}
 
-	if _, ok := provision["PPQCheck"]; ok {
-		return true
-	} else {
-		return false
-	}
+	ppq, ok := provision["PPQCheck"]
+	return ok && ppq.(bool), nil // this is fine since it checking `ok` will short-circuit
 }
 
 func main() {
-	directory := flag.String("directory", "", "Directory of the .mobileprovision (required)")
+	path := flag.String("path", "", "Path to the .mobileprovision (required)")
 	flag.Parse()
 
-	if *directory == "" {
-		fmt.Println("error: --directory flag is needed")
+	if *path == "" {
+		fmt.Println("error: --path flag is needed")
 		flag.Usage()
 		os.Exit(1)
 	}
 
-	ppqCheck := checkProvision(*directory)
-
-	if ppqCheck {
-		println("PPQ has been detected!")
-		return
-	} else {
-		println("PPQ has not been detected!")
-		return
+	ppq, err := HasPPQ(*path)
+	if err != nil {
+		fmt.Printf("error checking for ppq: %v", err)
+		os.Exit(1)
 	}
+
+	fmt.Printf("PPQ detected: %t\n", ppq)
 }
