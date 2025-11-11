@@ -16,7 +16,7 @@ func checkProvision(directory string) bool {
 		log.Fatal(err)
 	}
 
-	key := `<key>PPQCheck</key>\s*<(true|false)/?`
+	key := `<key>PPQCheck</key>`
 
 	re := regexp.MustCompile(key)
 	match := re.FindString(string(data))
