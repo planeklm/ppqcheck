@@ -8,15 +8,14 @@ a cli tool for checking if a provisioning profile (.mobileprovision) has PPQ ena
 install [go](https://go.dev)
 
 ```
-bash
-$ go install github.com/planeklm/ppqcheck@latest
+go install github.com/planeklm/ppqcheck@latest
 ```
 
 # usage
 you can get usage info with ppqcheck -h.
 
 ```
-$ ppqcheck -h
+ppqcheck -h
 Usage of ppqcheck:
   -path string
         Path to the .mobileprovision (required)
@@ -24,5 +23,5 @@ Usage of ppqcheck:
 
 # example
 ```
-$ ppqcheck -path /path/to/file.mobileprovision
+ppqcheck -path /path/to/file.mobileprovision
 ```
