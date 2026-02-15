@@ -18,10 +18,12 @@ you can get usage info with ppqcheck -h.
 ppqcheck -h
 Usage of ppqcheck:
   -path string
-        Path to the .mobileprovision (required)
+        Path to the .mobileprovision
 ```
 
 # example
 ```
+ppqcheck /path/to/file.mobileprovision
+ppqcheck /path/to/file1.mobileprovision /path/to/file2.mobileprovision
 ppqcheck -path /path/to/file.mobileprovision
 ```

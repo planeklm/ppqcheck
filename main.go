@@ -31,20 +31,29 @@ func HasPPQ(path string) (bool, error) {
 }
 
 func main() {
-	path := flag.String("path", "", "Path to the .mobileprovision (required)")
+	path := flag.String("path", "", "Path to the .mobileprovision")
 	flag.Parse()
 
-	if *path == "" {
-		fmt.Println("error: --path flag is needed")
+	// Collect files from flag and positional args
+	var paths []string
+	if *path != "" {
+		paths = append(paths, *path)
+	}
+	paths = append(paths, flag.Args()...)
+
+	if len(paths) == 0 {
+		fmt.Println("error: no files specified")
 		flag.Usage()
 		os.Exit(1)
 	}
 
-	ppq, err := HasPPQ(*path)
-	if err != nil {
-		fmt.Printf("error checking for ppq: %v", err)
-		os.Exit(1)
-	}
+	for _, p := range paths {
+		ppq, err := HasPPQ(p)
+		if err != nil {
+			fmt.Printf("error checking for ppq: %v\n", err)
+			os.Exit(1)
+		}
 
-	fmt.Printf("PPQ detected: %t\n", ppq)
+		fmt.Printf("%s - PPQ detected: %t\n", p, ppq)
+	}
 }
